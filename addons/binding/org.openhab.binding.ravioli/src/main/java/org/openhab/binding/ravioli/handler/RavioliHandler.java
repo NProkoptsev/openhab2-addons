@@ -36,7 +36,7 @@ public class RavioliHandler extends BaseThingHandler {
     private String image = null;
     private String text = null;
     // ?count=1&after=t3_612f0c
-    private static String textURLRequset = "https://www.reddit.com/r/showerthoughts/top.json";
+    private static String textURLRequset = "https://www.reddit.com/r/showerthoughts/hot.json";
     private static String imageURLRequest = "https://www.reddit.com/r/earthporn/top.json";
     private static String currentTextID = "t3_0";
     private static String currentImageID = "t3_0";
@@ -115,6 +115,8 @@ public class RavioliHandler extends BaseThingHandler {
         image = arr.getJSONObject(0).getJSONObject("data").getJSONObject("preview").getJSONArray("images")
                 .getJSONObject(0).getJSONObject("source").getString("url");
         currentImageID = "t3_" + arr.getJSONObject(0).getJSONObject("data").getString("id");
+        response = API.execute(textURLRequset, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count", "1");
+        text = response.getJson().getJSONObject("data").getJSONArray("children").getJSONObject(0).getString("title");
         return true;
     }
 
