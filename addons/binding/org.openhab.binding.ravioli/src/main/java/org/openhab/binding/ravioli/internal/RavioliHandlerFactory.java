@@ -26,7 +26,7 @@ import org.openhab.binding.ravioli.handler.RavioliHandler;
  */
 public class RavioliHandlerFactory extends BaseThingHandlerFactory {
 
-    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_SAMPLE);
+    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_MEME);
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
