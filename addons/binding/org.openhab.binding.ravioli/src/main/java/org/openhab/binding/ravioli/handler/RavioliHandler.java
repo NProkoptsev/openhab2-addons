@@ -50,12 +50,18 @@ public class RavioliHandler extends BaseThingHandler {
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        boolean success = updateData();
-        if (success) {
-            updateState(channelUID, getImage());
-            updateState(channelUID, getText());
+        if (channelUID.getId().equals(CHANNEL_IMAGE)) {
+            // TODO: handle command
+            return;
+        } else if (channelUID.getId().equals(CHANNEL_TEXT)) {
+            boolean success = updateText();
+            if (success) {
+                updateState(channelUID, getText());
+                if (updateImage()) {
+                    updateState(new ChannelUID(getThing().getUID(), CHANNEL_IMAGE), getImage());
+                }
+            }
         }
-
     }
 
     @Override
@@ -84,10 +90,13 @@ public class RavioliHandler extends BaseThingHandler {
             @Override
             public void run() {
                 try {
-                    boolean success = updateData();
+                    boolean success;
+                    success = updateText();
                     if (success) {
-                        updateState(new ChannelUID(getThing().getUID(), CHANNEL_IMAGE), getImage());
                         updateState(new ChannelUID(getThing().getUID(), CHANNEL_TEXT), getText());
+                        if (updateImage()) {
+                            updateState(new ChannelUID(getThing().getUID(), CHANNEL_IMAGE), getImage());
+                        }
                     }
                 } catch (Exception e) {
                     logger.debug("Exception occurred during execution: {}", e.getMessage(), e);
@@ -98,9 +107,24 @@ public class RavioliHandler extends BaseThingHandler {
         refreshJob = scheduler.scheduleAtFixedRate(runnable, 0, 5, TimeUnit.MINUTES);
     }
 
-    private boolean updateData() {
+    private boolean updateImage() {
         API.ApiResponse response;
-        boolean flag = false;
+        try {
+            response = API.execute(imageURLRequest, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count",
+                    "1", "after", currentImageID);
+            JSONArray arr = response.getJson().getJSONObject("data").getJSONArray("children");
+            image = arr.getJSONObject(0).getJSONObject("data").getJSONObject("preview").getJSONArray("images")
+                    .getJSONObject(0).getJSONObject("source").getString("url");
+            currentImageID = "t3_" + arr.getJSONObject(0).getJSONObject("data").getString("id");
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean updateText() {
+        API.ApiResponse response;
+        boolean flag;
         try {
             response = API.execute(textURLRequset, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count",
                     "1");
@@ -109,13 +133,6 @@ public class RavioliHandler extends BaseThingHandler {
             flag = !newText.equals(text);
             if (flag) {
                 text = newText;
-                response = API.execute(imageURLRequest, API.HttpMethod.GET, new API.Header[] { header1, header2 },
-                        "count", "1", "after", currentImageID);
-                JSONArray arr = response.getJson().getJSONObject("data").getJSONArray("children");
-                image = arr.getJSONObject(0).getJSONObject("data").getJSONObject("preview").getJSONArray("images")
-                        .getJSONObject(0).getJSONObject("source").getString("url");
-                currentImageID = "t3_" + arr.getJSONObject(0).getJSONObject("data").getString("id");
-
             }
         } catch (Exception e) {
             flag = false;
