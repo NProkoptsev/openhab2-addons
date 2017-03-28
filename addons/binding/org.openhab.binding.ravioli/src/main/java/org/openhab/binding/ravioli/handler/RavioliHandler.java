@@ -36,11 +36,12 @@ public class RavioliHandler extends BaseThingHandler {
     private String image = null;
     private String text = null;
     // ?count=1&after=t3_612f0c
-    private static String textURLRequset = "reddit.com/r/showerthoughts/top.json";
-    private static String imageURLRequest = "reddit.com/r/earthporn/top.json";
-    private static String currentTextID = "";
-    private static String currentImageID = "";
-    API.Header header = new API.Header("X-Modhash", "6emj8ygqyg005e0877deddb70f700db912e4011325eecb73c4");
+    private static String textURLRequset = "https://www.reddit.com/r/showerthoughts/top.json";
+    private static String imageURLRequest = "https://www.reddit.com/r/earthporn/top.json";
+    private static String currentTextID = "t3_0";
+    private static String currentImageID = "t3_0";
+    API.Header header1 = new API.Header("X-Modhash", "wlx42ev4uy2fcd84605865e9dd38ee24aa954f894baa9563d8");
+    API.Header header2 = new API.Header("User-agent", "RavioliBOT");
     ScheduledFuture<?> refreshJob;
 
     public RavioliHandler(Thing thing) {
@@ -102,15 +103,15 @@ public class RavioliHandler extends BaseThingHandler {
             }
         };
 
-        refreshJob = scheduler.scheduleAtFixedRate(runnable, 0, 60, TimeUnit.SECONDS);
+        refreshJob = scheduler.scheduleAtFixedRate(runnable, 0, 5, TimeUnit.MINUTES);
     }
 
     private boolean updateData() {
         API.ApiResponse response;
 
-        response = API.execute(imageURLRequest, API.HttpMethod.GET, new API.Header[] { header }, "count", "1", "after",
-                currentImageID);
-        JSONArray arr = response.getJson().getJSONObject("data").getJSONArray("childern");
+        response = API.execute(imageURLRequest, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count", "1",
+                "after", currentImageID);
+        JSONArray arr = response.getJson().getJSONObject("data").getJSONArray("children");
         image = arr.getJSONObject(0).getJSONObject("data").getJSONObject("preview").getJSONArray("images")
                 .getJSONObject(0).getJSONObject("source").getString("url");
         currentImageID = "t3_" + arr.getJSONObject(0).getJSONObject("data").getString("id");
