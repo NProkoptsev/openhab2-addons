@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.openhab.binding.ravioli.test</artifactId>
     <packaging>eclipse-test-plugin</packaging>
-    <name>Rfxcom Binding Tests</name>
+    <name>Ravioli Binding Tests</name>
 
     <parent>
         <groupId>org.openhab.binding</groupId>
@@ -14,8 +14,8 @@
     </parent>
 
     <properties>
-        <bundle.symbolicName>org.openhab.binding.rfxcom.test</bundle.symbolicName>
-        <bundle.namespace>org.openhab.binding.rfxcom.test</bundle.namespace>
+        <bundle.symbolicName>org.openhab.binding.ravioli.test</bundle.symbolicName>
+        <bundle.namespace>org.openhab.binding.ravioli.test</bundle.namespace>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
