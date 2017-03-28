@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Ravioli Binding Tests
+Bundle-SymbolicName: org.openhab.binding.ravioli.test;singleton:=true
+Bundle-Version: 2.1.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: openHAB
+Bundle-ClassPath: .,
+ lib/json-20160810.jar
+Fragment-Host: org.openhab.binding.ravioli
+Import-Package: org.slf4j,
+ org.apache.commons.lang.reflect,
+ org.eclipse.smarthome.core.events,
+ org.eclipse.smarthome.core.thing.util,
+ org.eclipse.smarthome.test,
+ org.eclipse.smarthome.test.storage,
+ org.hamcrest;core=split,
+ org.junit,
+ org.junit.runner,
+ org.junit.runners,
+ org.openhab.binding.ravioli,
+ org.osgi.service.device

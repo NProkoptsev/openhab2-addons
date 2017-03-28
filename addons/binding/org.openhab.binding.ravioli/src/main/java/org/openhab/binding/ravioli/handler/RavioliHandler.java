@@ -21,6 +21,7 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,8 +129,8 @@ public class RavioliHandler extends BaseThingHandler {
         try {
             response = API.execute(textURLRequset, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count",
                     "1", "after", currentTextID, "t", "all");
-            String newText = response.getJson().getJSONObject("data").getJSONArray("children").getJSONObject(0)
-                    .getJSONObject("data").getString("title");
+            JSONObject json = response.getJson();
+            String newText = getTextFromJson(json);
             currentTextID = "t3_" + response.getJson().getJSONObject("data").getJSONArray("children").getJSONObject(0)
                     .getJSONObject("data").getString("id");
             flag = !newText.equals(text);
@@ -140,6 +141,12 @@ public class RavioliHandler extends BaseThingHandler {
             flag = false;
         }
         return flag;
+    }
+
+    static public String getTextFromJson(JSONObject json) {
+        String newText = json.getJSONObject("data").getJSONArray("children").getJSONObject(0).getJSONObject("data")
+                .getString("title");
+        return newText;
     }
 
     private State getImage() {
