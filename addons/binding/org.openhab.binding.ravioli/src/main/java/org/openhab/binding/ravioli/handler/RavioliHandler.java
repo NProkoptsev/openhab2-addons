@@ -36,7 +36,7 @@ public class RavioliHandler extends BaseThingHandler {
     private String image = null;
     private String text = null;
     // ?count=1&after=t3_612f0c
-    private static String textURLRequset = "https://www.reddit.com/r/showerthoughts/hot.json";
+    private static String textURLRequset = "https://www.reddit.com/r/quotes/top.json";
     private static String imageURLRequest = "https://www.reddit.com/r/earthporn/top.json";
     private static String currentTextID = "t3_0";
     private static String currentImageID = "t3_0";
@@ -104,14 +104,14 @@ public class RavioliHandler extends BaseThingHandler {
             }
         };
 
-        refreshJob = scheduler.scheduleAtFixedRate(runnable, 0, 5, TimeUnit.MINUTES);
+        refreshJob = scheduler.scheduleAtFixedRate(runnable, 30, 30, TimeUnit.SECONDS);
     }
 
     private boolean updateImage() {
         API.ApiResponse response;
         try {
             response = API.execute(imageURLRequest, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count",
-                    "1", "after", currentImageID);
+                    "1", "after", currentImageID, "t", "all");
             JSONArray arr = response.getJson().getJSONObject("data").getJSONArray("children");
             image = arr.getJSONObject(0).getJSONObject("data").getJSONObject("preview").getJSONArray("images")
                     .getJSONObject(0).getJSONObject("source").getString("url");
@@ -127,9 +127,11 @@ public class RavioliHandler extends BaseThingHandler {
         boolean flag;
         try {
             response = API.execute(textURLRequset, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count",
-                    "1");
+                    "1", "after", currentTextID, "t", "all");
             String newText = response.getJson().getJSONObject("data").getJSONArray("children").getJSONObject(0)
                     .getJSONObject("data").getString("title");
+            currentTextID = "t3_" + response.getJson().getJSONObject("data").getJSONArray("children").getJSONObject(0)
+                    .getJSONObject("data").getString("id");
             flag = !newText.equals(text);
             if (flag) {
                 text = newText;
