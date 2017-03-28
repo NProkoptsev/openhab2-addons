@@ -5,20 +5,32 @@
         xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
     <!-- Sample Thing Type -->
-    <thing-type id="sample">
+    <thing-type id="meme">
         <label>Ravioli Binding Thing</label>
         <description>Sample thing for Ravioli Binding</description>
 
         <channels>
-            <channel id="channel1" typeId="sample-channel"/>
+            <channel id="image" typeId="image"/>
+            <channel id="text" typeId="text" />
         </channels>
     </thing-type>
+    
+    <channel-type id="image">
+        <item-type>String</item-type>
+        <label>Image</label>
+        <description>Current Image</description>
+        <category>Image</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
 
-    <!-- Sample Channel Type -->
-    <channel-type id="sample-channel">
-        <item-type>ravioliItem</item-type>
-        <label>Ravioli Binding Channel</label>
-        <description>Sample channel for Ravioli Binding</description>
+    <channel-type id="text">
+        <item-type>String</item-type>
+        <label>Text</label>
+        <description>Text to the image</description>
+        <category>Text</category>
+        <state readOnly="true">
+        </state>
     </channel-type>
 
 </thing:thing-descriptions>
