@@ -52,18 +52,10 @@ public class RavioliHandler extends BaseThingHandler {
     public void handleCommand(ChannelUID channelUID, Command command) {
         boolean success = updateData();
         if (success) {
-            if (channelUID.getId().equals(CHANNEL_IMAGE)) {
-                // TODO: handle command
-
-                // Note: if communication with thing fails for some reason,
-                // indicate that by setting the status with detail information
-                // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                // "Could not control device at IP address x.x.x.x");
-                updateState(channelUID, getImage());
-            } else if (channelUID.getId().equals(CHANNEL_TEXT)) {
-                updateState(channelUID, getText());
-            }
+            updateState(channelUID, getImage());
+            updateState(channelUID, getText());
         }
+
     }
 
     @Override
@@ -113,7 +105,7 @@ public class RavioliHandler extends BaseThingHandler {
             response = API.execute(textURLRequset, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count",
                     "1");
             String newText = response.getJson().getJSONObject("data").getJSONArray("children").getJSONObject(0)
-                    .getString("title");
+                    .getJSONObject("data").getString("title");
             flag = !newText.equals(text);
             if (flag) {
                 text = newText;
@@ -121,8 +113,9 @@ public class RavioliHandler extends BaseThingHandler {
                         "count", "1", "after", currentImageID);
                 JSONArray arr = response.getJson().getJSONObject("data").getJSONArray("children");
                 image = arr.getJSONObject(0).getJSONObject("data").getJSONObject("preview").getJSONArray("images")
-                        .getJSONObject(0).getJSONObject("source").getJSONObject("data").getString("url");
+                        .getJSONObject(0).getJSONObject("source").getString("url");
                 currentImageID = "t3_" + arr.getJSONObject(0).getJSONObject("data").getString("id");
+
             }
         } catch (Exception e) {
             flag = false;
