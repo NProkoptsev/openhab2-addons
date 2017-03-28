@@ -108,16 +108,26 @@ public class RavioliHandler extends BaseThingHandler {
 
     private boolean updateData() {
         API.ApiResponse response;
-
-        response = API.execute(imageURLRequest, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count", "1",
-                "after", currentImageID);
-        JSONArray arr = response.getJson().getJSONObject("data").getJSONArray("children");
-        image = arr.getJSONObject(0).getJSONObject("data").getJSONObject("preview").getJSONArray("images")
-                .getJSONObject(0).getJSONObject("source").getString("url");
-        currentImageID = "t3_" + arr.getJSONObject(0).getJSONObject("data").getString("id");
-        response = API.execute(textURLRequset, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count", "1");
-        text = response.getJson().getJSONObject("data").getJSONArray("children").getJSONObject(0).getString("title");
-        return true;
+        boolean flag = false;
+        try {
+            response = API.execute(textURLRequset, API.HttpMethod.GET, new API.Header[] { header1, header2 }, "count",
+                    "1");
+            String newText = response.getJson().getJSONObject("data").getJSONArray("children").getJSONObject(0)
+                    .getString("title");
+            flag = !newText.equals(text);
+            if (flag) {
+                text = newText;
+                response = API.execute(imageURLRequest, API.HttpMethod.GET, new API.Header[] { header1, header2 },
+                        "count", "1", "after", currentImageID);
+                JSONArray arr = response.getJson().getJSONObject("data").getJSONArray("children");
+                image = arr.getJSONObject(0).getJSONObject("data").getJSONObject("preview").getJSONArray("images")
+                        .getJSONObject(0).getJSONObject("source").getJSONObject("data").getString("url");
+                currentImageID = "t3_" + arr.getJSONObject(0).getJSONObject("data").getString("id");
+            }
+        } catch (Exception e) {
+            flag = false;
+        }
+        return flag;
     }
 
     private State getImage() {
